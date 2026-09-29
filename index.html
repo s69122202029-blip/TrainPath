@@ -1,0 +1,1371 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TrainPath - Railway Booking</title>
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&family=Montserrat:wght@500;600;700;800&display=swap');
+
+:root{
+  --navy:#071A33;
+  --blue:#1769E0;
+  --cyan:#00C6FF;
+  --gold:#D4AF37;
+  --bg:#CFE0EB;
+  --white:#fff;
+  --text:#10243e;
+  --muted:#60748c;
+  --line:#dbe5ed;
+  --success:#169b62;
+  --danger:#d9534f;
+}
+
+*{
+  box-sizing:border-box;
+  margin:0;
+  padding:0;
+}
+
+html{
+  scroll-behavior:smooth;
+}
+
+body{
+  font-family:Kanit,sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  min-height:100vh;
+}
+
+button,
+input,
+select{
+  font:inherit;
+}
+
+button{
+  cursor:pointer;
+  border:0;
+}
+
+
+/* =========================
+   NAVBAR
+========================= */
+
+.navbar{
+  height:76px;
+  background:var(--navy);
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:0 6%;
+  position:sticky;
+  top:0;
+  z-index:50;
+  box-shadow:0 5px 20px #071a3326;
+}
+
+.logo{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  color:#fff;
+  cursor:pointer;
+}
+
+.logo-mark{
+  width:45px;
+  height:45px;
+  border:2px solid var(--gold);
+  border-radius:13px;
+  position:relative;
+  display:grid;
+  place-items:center;
+  overflow:hidden;
+}
+
+.logo-t{
+  font-family:Montserrat;
+  font-size:23px;
+  font-weight:800;
+  z-index:2;
+}
+
+.logo-text{
+  font-family:Montserrat;
+  font-weight:800;
+  font-size:20px;
+  letter-spacing:.5px;
+}
+
+.logo-text span{
+  color:var(--gold);
+}
+
+.navlinks{
+  display:flex;
+  gap:8px;
+}
+
+.navlinks button{
+  background:transparent;
+  color:#dce7f4;
+  padding:10px 15px;
+  border-radius:10px;
+}
+
+.navlinks button:hover,
+.navlinks button.active{
+  background:#ffffff12;
+  color:#fff;
+}
+
+.nav-ticket{
+  position:relative;
+}
+
+.ticket-count{
+  position:absolute;
+  top:-3px;
+  right:-2px;
+  background:var(--gold);
+  color:var(--navy);
+  font-size:11px;
+  min-width:18px;
+  height:18px;
+  border-radius:99px;
+  display:grid;
+  place-items:center;
+  font-weight:700;
+}
+
+
+/* =========================
+   PAGE
+========================= */
+
+.page{
+  display:none;
+  min-height:calc(100vh - 76px);
+  animation:fade .35s ease;
+}
+
+.page.active{
+  display:block;
+}
+
+@keyframes fade{
+  from{
+    opacity:0;
+    transform:translateY(8px);
+  }
+
+  to{
+    opacity:1;
+    transform:none;
+  }
+}
+
+.container{
+  width:min(1150px,92%);
+  margin:auto;
+}
+
+
+/* =========================
+   HERO
+========================= */
+
+.hero{
+  min-height:560px;
+  display:flex;
+  align-items:center;
+
+  background:
+    linear-gradient(
+      90deg,
+      #071a33f2 0%,
+      #071a33c7 48%,
+      #071a3340 100%
+    ),
+    url("https://images.unsplash.com/photo-1474487548417-781cb71495f3?auto=format&fit=crop&w=1800&q=85")
+    center/cover;
+}
+
+.hero-content{
+  color:#fff;
+  max-width:650px;
+  padding:80px 0;
+}
+
+.eyebrow{
+  color:var(--gold);
+  font-weight:600;
+  letter-spacing:2px;
+  text-transform:uppercase;
+  font-family:Montserrat;
+  font-size:13px;
+}
+
+.hero h1{
+  font-family:Montserrat;
+  font-size:clamp(38px,6vw,72px);
+  line-height:1.02;
+  margin:15px 0;
+}
+
+.hero h1 span{
+  color:var(--gold);
+}
+
+.hero p{
+  font-size:18px;
+  color:#e4edf7;
+  line-height:1.8;
+  max-width:570px;
+}
+
+
+/* =========================
+   SEARCH
+========================= */
+
+.search-card{
+  background:#fff;
+  border-radius:22px;
+  padding:22px;
+  margin-top:30px;
+  box-shadow:0 20px 50px #0004;
+}
+
+.search-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr 1fr .75fr auto;
+  gap:12px;
+}
+
+.field label{
+  display:block;
+  font-size:12px;
+  color:var(--muted);
+  margin-bottom:6px;
+  font-weight:500;
+}
+
+.field input,
+.field select{
+  width:100%;
+  height:48px;
+  border:1px solid var(--line);
+  border-radius:11px;
+  padding:0 12px;
+  outline:none;
+  color:var(--text);
+  background:#fff;
+}
+
+.field input:focus,
+.field select:focus{
+  border-color:var(--blue);
+  box-shadow:0 0 0 3px #1769e01c;
+}
+
+.primary{
+  background:var(--blue);
+  color:#fff;
+  padding:0 22px;
+  height:48px;
+  border-radius:11px;
+  font-weight:600;
+  box-shadow:0 8px 20px #1769e033;
+}
+
+.primary:hover{
+  background:#1259c2;
+  transform:translateY(-1px);
+}
+
+.gold-btn{
+  background:var(--gold);
+  color:var(--navy);
+  height:48px;
+  padding:0 24px;
+  border-radius:11px;
+  font-weight:700;
+}
+
+
+/* =========================
+   SECTION
+========================= */
+
+.section{
+  padding:70px 0;
+}
+
+.section-head{
+  display:flex;
+  justify-content:space-between;
+  align-items:end;
+  margin-bottom:25px;
+}
+
+.section-title{
+  font-family:Montserrat;
+  font-size:27px;
+  color:var(--navy);
+}
+
+.muted{
+  color:var(--muted);
+}
+
+
+/* =========================
+   DESTINATION CARDS
+========================= */
+
+.popular-grid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:22px;
+}
+
+.destination-card{
+  background:#fff;
+  border-radius:22px;
+  overflow:hidden;
+  box-shadow:0 12px 32px #12304d16;
+  transition:.25s;
+  border:1px solid #fff;
+  position:relative;
+}
+
+.destination-card:hover{
+  transform:translateY(-7px);
+  box-shadow:0 20px 45px #12304d25;
+}
+
+.destination-image{
+  height:220px;
+  position:relative;
+  overflow:hidden;
+  background:#dce8ef;
+}
+
+.destination-image img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  display:block;
+  transition:transform .45s;
+}
+
+.destination-card:hover .destination-image img{
+  transform:scale(1.06);
+}
+
+
+/* fallback เมื่อรูปโหลดไม่ได้ */
+
+.destination-image.image-failed{
+  background:
+    linear-gradient(
+      135deg,
+      #071A33,
+      #1769E0
+    );
+}
+
+.destination-image.image-failed::after{
+  content:"TrainPath • Destination";
+  position:absolute;
+  inset:0;
+
+  display:flex;
+  align-items:center;
+  justify-content:center;
+
+  color:#fff;
+  font-weight:700;
+  letter-spacing:.5px;
+}
+
+.destination-overlay{
+  position:absolute;
+  inset:0;
+
+  background:
+    linear-gradient(
+      180deg,
+      #071a3300 40%,
+      #071a33c9 100%
+    );
+}
+
+.destination-badge{
+  position:absolute;
+  top:15px;
+  left:15px;
+
+  background:#ffffffed;
+  color:var(--navy);
+
+  padding:7px 12px;
+
+  border-radius:99px;
+
+  font-size:11px;
+  font-weight:600;
+
+  box-shadow:0 5px 15px #0002;
+}
+
+.destination-distance{
+  position:absolute;
+  bottom:15px;
+  right:15px;
+
+  color:#fff;
+
+  font-size:12px;
+
+  background:#071a33b8;
+
+  padding:7px 11px;
+
+  border-radius:99px;
+
+  backdrop-filter:blur(5px);
+}
+
+.destination-body{
+  padding:20px;
+}
+
+.destination-body h3{
+  font-family:Montserrat;
+  color:var(--navy);
+  font-size:23px;
+  margin-bottom:4px;
+}
+
+.destination-sub{
+  font-size:13px;
+  color:var(--muted);
+  margin-bottom:17px;
+}
+
+.destination-info{
+  display:flex;
+  align-items:end;
+  justify-content:space-between;
+  gap:12px;
+  margin-bottom:18px;
+}
+
+.destination-price span{
+  display:block;
+  color:var(--muted);
+  font-size:11px;
+}
+
+.destination-price strong{
+  color:var(--blue);
+  font-size:21px;
+}
+
+.destination-route{
+  font-size:12px;
+  color:var(--muted);
+  text-align:right;
+}
+
+.destination-route b{
+  display:block;
+  color:var(--navy);
+  font-size:13px;
+}
+
+.destination-book{
+  width:100%;
+  height:45px;
+  border-radius:11px;
+  background:var(--navy);
+  color:#fff;
+  font-weight:600;
+  transition:.2s;
+}
+
+.destination-book:hover{
+  background:var(--blue);
+}
+
+
+/* =========================
+   ROUTES
+========================= */
+
+.route-card{
+  background:#fff;
+  border-radius:18px;
+  padding:22px;
+  box-shadow:0 8px 25px #12304d12;
+  transition:.2s;
+  cursor:pointer;
+}
+
+.route-card:hover{
+  transform:translateY(-4px);
+  box-shadow:0 15px 30px #12304d1c;
+}
+
+.route-line{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  margin:17px 0;
+  color:var(--navy);
+  font-weight:600;
+}
+
+.dot{
+  width:11px;
+  height:11px;
+  border:3px solid var(--blue);
+  border-radius:50%;
+  background:#fff;
+}
+
+.dash{
+  height:2px;
+  background:linear-gradient(90deg,var(--blue),var(--cyan));
+  flex:1;
+}
+
+.route-meta{
+  font-size:13px;
+  color:var(--muted);
+  display:flex;
+  justify-content:space-between;
+}
+
+.results-header{
+  padding:45px 0 25px;
+}
+
+.results-layout{
+  display:grid;
+  grid-template-columns:290px 1fr;
+  gap:22px;
+  padding-bottom:60px;
+}
+
+.panel{
+  background:#fff;
+  border-radius:18px;
+  padding:20px;
+  box-shadow:0 8px 25px #12304d12;
+}
+
+.panel h3{
+  font-size:18px;
+  margin-bottom:15px;
+  color:var(--navy);
+}
+
+.filter-row{
+  margin-bottom:18px;
+}
+
+.filter-row label{
+  font-size:13px;
+  color:var(--muted);
+  display:block;
+  margin-bottom:7px;
+}
+
+.filter-row input,
+.filter-row select{
+  width:100%;
+  height:43px;
+  border:1px solid var(--line);
+  border-radius:9px;
+  padding:0 10px;
+}
+
+.train-list{
+  display:grid;
+  gap:15px;
+}
+
+.train-card{
+  background:#fff;
+  border-radius:18px;
+  padding:20px;
+  display:grid;
+  grid-template-columns:1.2fr 1fr .8fr auto;
+  align-items:center;
+  gap:18px;
+  box-shadow:0 8px 25px #12304d12;
+  border:2px solid transparent;
+}
+
+.train-card:hover{
+  border-color:#1769e033;
+}
+
+.train-name{
+  font-weight:700;
+  color:var(--navy);
+  font-size:17px;
+}
+
+.train-type{
+  font-size:12px;
+  color:var(--blue);
+}
+
+.time{
+  font-family:Montserrat;
+  font-weight:700;
+  font-size:19px;
+  color:var(--navy);
+}
+
+.time small{
+  font-family:Kanit;
+  font-size:12px;
+  color:var(--muted);
+  font-weight:400;
+}
+
+.duration{
+  text-align:center;
+  color:var(--muted);
+  font-size:12px;
+}
+
+.price{
+  font-size:20px;
+  font-weight:700;
+  color:var(--blue);
+}
+
+.price small{
+  display:block;
+  color:var(--muted);
+  font-size:11px;
+  font-weight:400;
+}
+
+.route-preview{
+  margin:20px 0;
+  padding:22px;
+  background:#f7fafc;
+  border-radius:15px;
+}
+
+.path-line{
+  display:flex;
+  align-items:center;
+  gap:0;
+  overflow:auto;
+  padding:10px 3px;
+}
+
+.station{
+  min-width:105px;
+  text-align:center;
+}
+
+.station .node{
+  width:18px;
+  height:18px;
+  border-radius:50%;
+  background:var(--blue);
+  margin:auto;
+  border:4px solid #d9efff;
+  box-shadow:0 0 0 2px var(--blue);
+}
+
+.station strong{
+  display:block;
+  margin-top:9px;
+  font-size:13px;
+}
+
+.edge{
+  height:4px;
+  min-width:55px;
+  background:linear-gradient(90deg,var(--blue),var(--cyan));
+  position:relative;
+}
+
+.edge span{
+  position:absolute;
+  top:-22px;
+  left:50%;
+  transform:translateX(-50%);
+  font-size:10px;
+  color:var(--muted);
+  white-space:nowrap;
+}
+
+
+/* =========================
+   BOOKING
+========================= */
+
+.booking-wrap{
+  padding:50px 0 70px;
+}
+
+.booking-grid{
+  display:grid;
+  grid-template-columns:1.2fr .8fr;
+  gap:24px;
+}
+
+.form-panel{
+  background:#fff;
+  border-radius:20px;
+  padding:28px;
+  box-shadow:0 8px 25px #12304d12;
+}
+
+.form-panel h2{
+  font-family:Montserrat;
+  color:var(--navy);
+  margin-bottom:20px;
+}
+
+.form-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:15px;
+}
+
+.form-group.full{
+  grid-column:1/-1;
+}
+
+.form-group label{
+  display:block;
+  font-size:13px;
+  color:var(--muted);
+  margin-bottom:6px;
+}
+
+.form-group input{
+  width:100%;
+  height:46px;
+  border:1px solid var(--line);
+  border-radius:10px;
+  padding:0 12px;
+}
+
+.seat-grid{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:9px;
+  margin-top:15px;
+}
+
+.seat{
+  height:40px;
+  border-radius:8px;
+  background:#e8f0f6;
+  color:var(--navy);
+  font-weight:600;
+}
+
+.seat:hover{
+  background:#d6e7f4;
+}
+
+.seat.selected{
+  background:var(--blue);
+  color:#fff;
+}
+
+.seat.booked{
+  background:#c8d0d7;
+  color:#77828c;
+  cursor:not-allowed;
+}
+
+.summary{
+  background:var(--navy);
+  color:#fff;
+  border-radius:20px;
+  padding:28px;
+  height:max-content;
+  position:sticky;
+  top:95px;
+}
+
+.summary h2{
+  font-family:Montserrat;
+  color:#fff;
+  margin-bottom:22px;
+}
+
+.summary .sum-row{
+  display:flex;
+  justify-content:space-between;
+  padding:12px 0;
+  border-bottom:1px solid #ffffff1c;
+}
+
+.summary .total{
+  font-size:24px;
+  color:var(--gold);
+  font-weight:700;
+  margin-top:15px;
+}
+
+
+/* =========================
+   TICKETS
+========================= */
+
+.ticket-page{
+  padding:50px 0 80px;
+}
+
+.ticket-top{
+  display:flex;
+  justify-content:space-between;
+  align-items:end;
+  margin-bottom:25px;
+}
+
+.ticket-list{
+  display:grid;
+  gap:20px;
+}
+
+.ticket{
+  background:#fff;
+  border-radius:20px;
+  overflow:hidden;
+  box-shadow:0 10px 30px #12304d18;
+  position:relative;
+}
+
+.ticket-main{
+  padding:27px;
+}
+
+.ticket-brand{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  border-bottom:1px dashed #c7d4df;
+  padding-bottom:17px;
+}
+
+.ticket-brand strong{
+  font-family:Montserrat;
+  color:var(--navy);
+  font-size:20px;
+}
+
+.booking-id{
+  font-size:12px;
+  color:var(--muted);
+}
+
+.ticket-route{
+  display:grid;
+  grid-template-columns:1fr 60px 1fr;
+  align-items:center;
+  text-align:center;
+  padding:25px 0;
+}
+
+.ticket-city{
+  font-size:24px;
+  font-weight:700;
+  color:var(--navy);
+}
+
+.ticket-time{
+  font-family:Montserrat;
+  color:var(--blue);
+  font-weight:700;
+}
+
+.ticket-arrow{
+  height:2px;
+  background:linear-gradient(90deg,var(--blue),var(--cyan));
+  position:relative;
+}
+
+.ticket-arrow:after{
+  content:"";
+  position:absolute;
+  right:0;
+  top:-4px;
+  border-left:10px solid var(--cyan);
+  border-top:5px solid transparent;
+  border-bottom:5px solid transparent;
+}
+
+.ticket-info{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:15px;
+  border-top:1px solid var(--line);
+  padding-top:18px;
+}
+
+.info label{
+  display:block;
+  color:var(--muted);
+  font-size:11px;
+}
+
+.info strong{
+  color:var(--navy);
+}
+
+.ticket-actions{
+  padding:16px 27px;
+  background:#f7fafc;
+  display:flex;
+  justify-content:flex-end;
+  gap:10px;
+}
+
+.outline{
+  height:42px;
+  border:1px solid var(--line);
+  background:#fff;
+  color:var(--navy);
+  padding:0 17px;
+  border-radius:9px;
+}
+
+.danger{
+  height:42px;
+  background:#fff0ef;
+  color:var(--danger);
+  padding:0 17px;
+  border-radius:9px;
+}
+
+.empty{
+  background:#fff;
+  border-radius:20px;
+  padding:60px 20px;
+  text-align:center;
+  color:var(--muted);
+}
+
+.empty .big{
+  font-size:48px;
+  margin-bottom:10px;
+}
+
+
+/* =========================
+   TOAST / MODAL
+========================= */
+
+.toast{
+  position:fixed;
+  right:25px;
+  bottom:25px;
+  background:var(--navy);
+  color:#fff;
+  padding:14px 20px;
+  border-radius:12px;
+  box-shadow:0 10px 30px #0003;
+  z-index:100;
+  transform:translateY(120px);
+  opacity:0;
+  transition:.3s;
+}
+
+.toast.show{
+  transform:none;
+  opacity:1;
+}
+
+.modal-back{
+  display:none;
+  position:fixed;
+  inset:0;
+  background:#071a3380;
+  z-index:90;
+  align-items:center;
+  justify-content:center;
+  padding:20px;
+}
+
+.modal-back.show{
+  display:flex;
+}
+
+.modal{
+  background:#fff;
+  border-radius:20px;
+  width:min(480px,100%);
+  padding:28px;
+  box-shadow:0 25px 70px #0005;
+}
+
+.modal h2{
+  color:var(--navy);
+  margin-bottom:12px;
+}
+
+.modal p{
+  color:var(--muted);
+  line-height:1.7;
+}
+
+.modal-actions{
+  display:flex;
+  gap:10px;
+  justify-content:flex-end;
+  margin-top:22px;
+}
+
+
+/* =========================
+   FOOTER
+========================= */
+
+footer{
+  background:var(--navy);
+  color:#b9c8d8;
+  padding:35px 6%;
+  text-align:center;
+}
+
+footer strong{
+  color:#fff;
+  font-family:Montserrat;
+}
+
+
+/* =========================
+   RESPONSIVE
+========================= */
+
+@media(max-width:900px){
+
+  .search-grid{
+    grid-template-columns:1fr 1fr;
+  }
+
+  .search-grid .search-button{
+    grid-column:1/-1;
+  }
+
+  .popular-grid{
+    grid-template-columns:1fr 1fr;
+  }
+
+  .results-layout{
+    grid-template-columns:1fr;
+  }
+
+  .train-card{
+    grid-template-columns:1fr 1fr;
+  }
+
+  .train-card .choose{
+    grid-column:1/-1;
+  }
+
+  .booking-grid{
+    grid-template-columns:1fr;
+  }
+
+  .summary{
+    position:static;
+  }
+}
+
+@media(max-width:650px){
+
+  .navbar{
+    height:auto;
+    min-height:70px;
+    padding:12px 4%;
+    flex-wrap:wrap;
+    gap:8px;
+  }
+
+  .navlinks{
+    width:100%;
+    overflow:auto;
+    justify-content:flex-start;
+  }
+
+  .navlinks button{
+    font-size:12px;
+    white-space:nowrap;
+  }
+
+  .hero{
+    min-height:650px;
+  }
+
+  .hero-content{
+    padding:55px 0;
+  }
+
+  .search-grid,
+  .form-grid{
+    grid-template-columns:1fr;
+  }
+
+  .form-group.full{
+    grid-column:auto;
+  }
+
+  .popular-grid{
+    grid-template-columns:1fr;
+  }
+
+  .destination-image{
+    height:200px;
+  }
+
+  .ticket-route{
+    grid-template-columns:1fr 35px 1fr;
+  }
+
+  .ticket-city{
+    font-size:18px;
+  }
+
+  .ticket-info{
+    grid-template-columns:1fr 1fr;
+  }
+
+  .ticket-main{
+    padding:20px;
+  }
+
+  .ticket-actions{
+    padding:14px 20px;
+  }
+
+  .train-card{
+    grid-template-columns:1fr;
+  }
+
+  .train-card .choose{
+    grid-column:auto;
+  }
+}
+</style>
+</head>
+
+<body>
+
+
+<!-- =========================
+     NAVBAR
+========================= -->
+
+<header class="navbar">
+
+  <div class="logo" onclick="showPage('home')">
+
+    <div class="logo-mark" aria-label="TrainPath logo">
+
+      <svg
+        viewBox="0 0 64 64"
+        width="42"
+        height="42"
+        role="img"
+        aria-hidden="true"
+      >
+
+        <defs>
+          <linearGradient
+            id="tpGold"
+            x1="0"
+            y1="0"
+            x2="1"
+            y2="1"
+          >
+            <stop offset="0" stop-color="#F4D36A"/>
+            <stop offset="1" stop-color="#D4AF37"/>
+          </linearGradient>
+        </defs>
+
+        <path
+          d="M12 47h40"
+          stroke="url(#tpGold)"
+          stroke-width="3"
+          stroke-linecap="round"
+        />
+
+        <path
+          d="M16 39h32"
+          stroke="#00C6FF"
+          stroke-width="2"
+          stroke-linecap="round"
+          opacity=".9"
+        />
+
+        <rect
+          x="17"
+          y="14"
+          width="30"
+          height="25"
+          rx="7"
+          fill="none"
+          stroke="url(#tpGold)"
+          stroke-width="3"
+        />
+
+        <path
+          d="M22 21h20M23 28h6M35 28h6"
+          stroke="#fff"
+          stroke-width="2.5"
+          stroke-linecap="round"
+        />
+
+        <circle
+          cx="25"
+          cy="42"
+          r="4"
+          fill="#071A33"
+          stroke="url(#tpGold)"
+          stroke-width="2"
+        />
+
+        <circle
+          cx="39"
+          cy="42"
+          r="4"
+          fill="#071A33"
+          stroke="url(#tpGold)"
+          stroke-width="2"
+        />
+
+        <path
+          d="M9 51c11-7 19-7 28-1 7 5 12 4 18-1"
+          fill="none"
+          stroke="#00C6FF"
+          stroke-width="2"
+          stroke-linecap="round"
+        />
+
+      </svg>
+
+    </div>
+
+    <div class="logo-text">
+      Train<span>Path</span>
+    </div>
+
+  </div>
+
+
+  <nav class="navlinks">
+
+    <button
+      id="nav-home"
+      class="active"
+      onclick="showPage('home')"
+    >
+      หน้าแรก
+    </button>
+
+    <button
+      id="nav-routes"
+      onclick="showPage('routes')"
+    >
+      ค้นหาเส้นทาง
+    </button>
+
+    <button
+      id="nav-booking"
+      onclick="showPage('booking')"
+    >
+      จองตั๋ว
+    </button>
+
+    <button
+      id="nav-tickets"
+      class="nav-ticket"
+      onclick="showPage('tickets')"
+    >
+      ตั๋วของฉัน
+
+      <span
+        id="ticketCount"
+        class="ticket-count"
+      >
+        0
+      </span>
+
+    </button>
+
+  </nav>
+
+</header>
+
+
+<main>
+
+
+<!-- =========================
+     HOME PAGE
+========================= -->
+
+<section
+  id="home"
+  class="page active"
+>
+
+  <div class="hero">
+
+    <div class="container">
+
+      <div class="hero-content">
+
+        <div class="eyebrow">
+          TRAIN • CONNECT • JOURNEY
+        </div>
+
+        <h1>
+          เดินทางไปทุกที่<br>
+          <span>ด้วย TrainPath</span>
+        </h1>
+
+        <p>
+          ค้นหาเส้นทางรถไฟ เลือกขบวน
+          เลือกที่นั่ง และรับตั๋วเดินทางของคุณ
+          ในไม่กี่ขั้นตอน
+        </p>
+
+
+        <div class="search-card">
+
+          <div class="search-grid">
+
+            <div class="field">
+              <label>ต้นทาง</label>
+              <select id="fromSelect"></select>
+            </div>
+
+            <div class="field">
+              <label>ปลายทาง</label>
+              <select id="toSelect"></select>
+            </div>
+
+            <div 
